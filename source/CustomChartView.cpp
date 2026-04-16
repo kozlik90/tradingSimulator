@@ -50,7 +50,6 @@ void CustomChartView::mouseMoveEvent(QMouseEvent *event)
         QList<QAbstractAxis*> axesY = chart()->axes(Qt::Vertical);
 
         if (!axesX.isEmpty() && !axesY.isEmpty()) {
-            // Ось Y (цена) - как раньше
 
             QValueAxis* axisY = qobject_cast<QValueAxis*>(axesY.first());
             if(verticalScrollEnabled) {
@@ -61,31 +60,18 @@ void CustomChartView::mouseMoveEvent(QMouseEvent *event)
                 }
             }
 
-            // Ось X (время) - новая логика
             QDateTimeAxis* axisX = qobject_cast<QDateTimeAxis*>(axesX.first());
             if (axisX) {
-                // Получи границы данных из series
                 QCandlestickSeries* series = qobject_cast<QCandlestickSeries*>(chart()->series().first());
                 if (series && !series->sets().isEmpty()) {
                     qint64 dataMin = series->sets().first()->timestamp();
                     qint64 dataMax = series->sets().last()->timestamp();
 
-                    // Вычисли новый диапазон
                     qint64 dx = axisX->max().toMSecsSinceEpoch() - axisX->min().toMSecsSinceEpoch();
                     qint64 shiftX = dx * delta.x() / chart()->plotArea().width();
 
                     qint64 newMinMs = axisX->min().toMSecsSinceEpoch() - shiftX;
                     qint64 newMaxMs = axisX->max().toMSecsSinceEpoch() - shiftX;
-
-                    // Ограничь границами данных
-                    // if (newMinMs < dataMin) {
-                    //     newMinMs = dataMin;
-                    //     newMaxMs = dataMin + dx;
-                    // }
-                    // if (newMaxMs > dataMax) {
-                    //     newMaxMs = dataMax;
-                    //     newMinMs = dataMax - dx;
-                    // }
 
                     QDateTime newMin = QDateTime::fromMSecsSinceEpoch(newMinMs);
                     QDateTime newMax = QDateTime::fromMSecsSinceEpoch(newMaxMs);

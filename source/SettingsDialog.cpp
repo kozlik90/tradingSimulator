@@ -6,11 +6,6 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     , ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
-    // ui->checkBoxMA->setChecked(true);
-    // ui->checkBoxRSI->setChecked(true);
-    // ui->checkBoxMACD->setChecked(true);
-    // ui->spinBoxMA->setValue(20);
-    // ui->spinBoxRSI->setValue(14);
     loadSettings();
 }
 

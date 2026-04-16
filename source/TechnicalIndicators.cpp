@@ -120,7 +120,6 @@ QList<MACDData> TechnicalIndicators::calculateMACD(QList<CandleData> list, int f
     int fastStart = fastPeriod - 1;  // 11
 
     for(int i = 0; i < emaSlow.size(); ++i) {
-        // Соответствующий индекс в emaFast
         int fastIndex = i + (slowStart - fastStart);  // i + 14
 
         if (fastIndex < emaFast.size()) {

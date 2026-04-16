@@ -21,6 +21,8 @@
 ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
     factor = 1.0;
     isDragging = false;
+
+    //Создание основного графика
     series = new QCandlestickSeries();
     series->setIncreasingColor(QColor(Qt::green));
     series->setDecreasingColor(QColor(Qt::red));
@@ -42,6 +44,7 @@ ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
     mainChart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
 
+    //Создание графика скользящей средней
     maSeries = new QLineSeries(this);
     maSeries->setName("MA");
     maSeries->setColor(Qt::blue);
@@ -54,6 +57,7 @@ ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
     maSeries->attachAxis(axisx);
     maSeries->attachAxis(axisY);
 
+    //График меток покупки
     buyMarkers = new QScatterSeries(this);
     buyMarkers->setName("Buy");
     buyMarkers->setColor(Qt::green);
@@ -69,6 +73,7 @@ ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
     buyMarkers->attachAxis(axisx);
     buyMarkers->attachAxis(axisY);
 
+    //График меток продажи
     sellMarkers = new QScatterSeries(this);
     sellMarkers->setName("Sell");
     sellMarkers->setColor(Qt::red);
@@ -84,34 +89,9 @@ ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
     sellMarkers->attachAxis(axisx);
     sellMarkers->attachAxis(axisY);
 
-    // takeProfitSeries = new QLineSeries(this);
-    // takeProfitSeries->setName("TakeProfit");
-    // takeProfitSeries->setColor(Qt::green);
-    // pen = takeProfitSeries->pen();
-    // pen.setStyle(Qt::DashLine);
-    // pen.setWidth(1);
-    // takeProfitSeries->setPen(pen);
-
-    // mainChart->addSeries(takeProfitSeries);
-
-    // takeProfitSeries->attachAxis(axisx);
-    // takeProfitSeries->attachAxis(axisY);
-
-    // stopLossSeries = new QLineSeries(this);
-    // stopLossSeries->setName("StopLoss");
-    // stopLossSeries->setColor(Qt::red);
-    // pen = stopLossSeries->pen();
-    // pen.setStyle(Qt::DashLine);
-    // pen.setWidth(1);
-    // stopLossSeries->setPen(pen);
-
-    // mainChart->addSeries(stopLossSeries);
-
-    //stopLossSeries->attachAxis(axisx);
-    //stopLossSeries->attachAxis(axisY);
-
     mainChartView = new CustomChartView(mainChart, this);
 
+    //График RSI
     rsiSeries = new QLineSeries(this);
     rsiSeries->setName("RSI");
     rsiSeries->setColor(Qt::black);
@@ -137,7 +117,7 @@ ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
     rsiUpperLine->setName("Overbought");
     rsiUpperLine->setColor(Qt::red);
     QPen upperPen = rsiUpperLine->pen();
-    upperPen.setStyle(Qt::DashLine);  // Пунктирная линия
+    upperPen.setStyle(Qt::DashLine);
     rsiUpperLine->setPen(upperPen);
 
     rsiChart->addSeries(rsiUpperLine);
@@ -170,6 +150,7 @@ ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
         macdAxisX->setRange(min, max);
     });
 
+    //График MACD
     macdLine = new QLineSeries(this);
     macdLine->setName("MACD");
     macdLine->setColor(Qt::darkYellow);
@@ -199,6 +180,7 @@ ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
     macdLine->attachAxis(macdAxisY);
     signalLine->attachAxis(macdAxisY);
 
+    //Нулевой уровень MACD
     macdZeroLine = new QLineSeries(this);
     macdZeroLine->setName("Zero");
     macdZeroLine->setColor(Qt::black);
@@ -219,8 +201,7 @@ ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
     chartsLayout->setContentsMargins(0, 0, 0, 0);
     chartsLayout->setSpacing(2);
 
-    // Установи фиксированную высоту для каждого графика
-    mainChartView->setMinimumHeight(600);  // Нормальная высота
+    mainChartView->setMinimumHeight(600);
     rsiChartView->setMinimumHeight(300);
     macdChartView->setMinimumHeight(300);
 
@@ -228,13 +209,11 @@ ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
     chartsLayout->addWidget(rsiChartView);
     chartsLayout->addWidget(macdChartView);
 
-    // Оберни в QScrollArea
     CustomScrollArea* scrollArea = new CustomScrollArea(this);
     scrollArea->setWidget(container);
     scrollArea->setWidgetResizable(true);  // Важно!
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);  // Только вертикальная прокрутка
 
-    // Добавь scrollArea в главный layout
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(scrollArea);
@@ -281,8 +260,6 @@ void ChartWidget::setCandles(QList<CandleData> list)
     rsiSeries->clear();
     macdLine->clear();
     signalLine->clear();
-    //takeProfitSeries->clear();
-    //stopLossSeries->clear();
 
     double max = 0;
     double min = 999999999;
@@ -344,8 +321,6 @@ void ChartWidget::setCandles(QList<CandleData> list)
         rsiUpperLine->clear();
         rsiUpperLine->append(minTime.toMSecsSinceEpoch(), 70);
         rsiUpperLine->append(maxTime.toMSecsSinceEpoch(), 70);
-
-
 
         rsiLowerLine->clear();
         rsiLowerLine->append(minTime.toMSecsSinceEpoch(), 30);
@@ -542,7 +517,7 @@ void ChartWidget::createTradeMarker(qint64 timestamp, double price, TradeType ty
 
     if(series->sets().isEmpty()) return;
 
-    // Найди ближайшую свечу
+    //Находим ближайшую свечу для установки метки
     QCandlestickSet* closestSet = nullptr;
     qint64 minDiff = LLONG_MAX;
 
@@ -730,7 +705,6 @@ void ChartWidget::wheelEvent(QWheelEvent *event)
     if (ctrlPressed) {
         // Zoom только по оси Y
         if(event->angleDelta().y() > 0) {
-            // Приблизить по Y
             qreal currentRange = axisY->max() - axisY->min();
             qreal center = (axisY->max() + axisY->min()) / 2;
             qreal newRange = currentRange * 0.95;  // Уменьшить диапазон
@@ -738,7 +712,6 @@ void ChartWidget::wheelEvent(QWheelEvent *event)
             axisY->setRange(center - newRange/2, center + newRange/2);
 
         } else {
-            // Отдалить по Y
             qreal currentRange = axisY->max() - axisY->min();
             qreal center = (axisY->max() + axisY->min()) / 2;
             qreal newRange = currentRange * 1.05;  // Увеличить диапазон
@@ -754,7 +727,6 @@ void ChartWidget::wheelEvent(QWheelEvent *event)
         }
         else {
             if(factor > 0.4) {
-                qDebug() <<factor;
                 factor *= 0.95;
                 mainChart->zoom(0.95);
             }
