@@ -13,6 +13,7 @@ public:
     BybitApi(QObject*);
     void fetchPrice(QString);
     void fetchCandle(QString, int, int);
+
 private:
     QNetworkAccessManager* manager;
     QNetworkAccessManager* candleManager;
@@ -21,6 +22,7 @@ signals:
     void candleReceived(QList<CandleData>);
 private slots:
     void onReplyFinished(QNetworkReply*);
+
 };
 
 #endif // BYBITAPI_H

@@ -1,4 +1,4 @@
-#include "TradingSignals.h"
+#include "includes/TradingSignals.h"
 
 TradingSignals::TradingSignals(QObject* parrent) : QObject(parrent) {
 

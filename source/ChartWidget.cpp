@@ -1,4 +1,4 @@
-#include "ChartWidget.h"
+#include "includes/ChartWidget.h"
 #include "qdatetime.h"
 #include <QChart>
 #include <QChartView>
@@ -15,8 +15,8 @@
 #include <QBarSet>
 #include <QScatterSeries>
 #include <QComboBox>
-#include "TechnicalIndicators.h"
-#include "CustomScrollArea.h"
+#include "includes/TechnicalIndicators.h"
+#include "includes/CustomScrollArea.h"
 
 ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
     factor = 1.0;

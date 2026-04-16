@@ -7,9 +7,9 @@
 #include <QDateTime>
 
 
-#include "CandleData.h"
-#include "CustomChartView.h"
-#include "TradeData.h"
+#include "includes/CandleData.h"
+#include "includes/CustomChartView.h"
+#include "includes/TradeData.h"
 
 class QBarCategoryAxis;
 class QValueAxis;

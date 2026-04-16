@@ -1,4 +1,4 @@
-#include "CoinData.h"
+#include "includes/CoinData.h"
 
 
 CoinData::CoinData(QString t, double p, QObject* parrent = nullptr) : QObject(parrent), ticker(t), price(p)

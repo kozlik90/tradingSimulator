@@ -1,4 +1,4 @@
-#include "BybitApi.h"
+#include "includes/BybitApi.h"
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -41,6 +41,7 @@ void BybitApi::fetchCandle(QString symbol, int interval, int limit)
 
 }
 
+
 void BybitApi::onReplyFinished(QNetworkReply *reply)
 {
     QString type = reply->request().attribute(QNetworkRequest::Attribute(QNetworkRequest::User+1)).toString();
@@ -78,3 +79,4 @@ void BybitApi::onReplyFinished(QNetworkReply *reply)
 
 
 }
+

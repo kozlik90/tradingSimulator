@@ -1,4 +1,4 @@
-#include "CustomChartView.h"
+#include "includes/CustomChartView.h"
 #include "qcandlestickset.h"
 #include "qdatetime.h"
 #include <QList>

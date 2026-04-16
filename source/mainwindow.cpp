@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "includes/mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QHeaderView>
 #include <QTimer>
@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QRegularExpressionValidator>
-#include "TradingSignals.h"
+#include "includes/TradingSignals.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     timer = new QTimer(this);
     candleTimer = nullptr;
     connect(timer, SIGNAL(timeout()), this, SLOT(fetchPrice()));
-    timer->start(3000);
+    timer->start(1000);
 
     ui->tableCoin->setHorizontalHeaderLabels({"Coin", "Price"});
     ui->tableCoin->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -144,7 +144,7 @@ void MainWindow::onCoinSelected(int row, int column)
             candleTimer = new QTimer(this);
             connect(candleTimer, &QTimer::timeout, this, &MainWindow::updateCurrentCandle);
         }
-        candleTimer->start(3000);
+        candleTimer->start(1000);
     }
 }
 

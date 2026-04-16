@@ -1,5 +1,5 @@
-#include "TechnicalIndicators.h"
-#include "CandleData.h"
+#include "includes/TechnicalIndicators.h"
+#include "includes/CandleData.h"
 
 TechnicalIndicators::TechnicalIndicators(QObject* parrent) : QObject(parrent) {
 

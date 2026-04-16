@@ -1,4 +1,4 @@
-#include "TradingSimulator.h"
+#include "includes/TradingSimulator.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
