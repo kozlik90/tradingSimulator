@@ -77,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->chart_widget->setMAPeriod(settings.value("chart/maPeriod", 20).toInt());
     ui->chart_widget->setRSIPeriod(settings.value("chart/rsiPeriod", 14).toInt());
 
+
 }
 
 void MainWindow::fetchPrice()
