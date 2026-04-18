@@ -42,9 +42,6 @@ int SettingsDialog::getRSIPeriod() const
 void SettingsDialog::saveSettings()
 {
     QSettings settings("kozlik90 Inc.", "user");
-    qDebug() << "Saving settings:";
-    qDebug() << "MA period:" << ui->spinBoxMA->value();
-    qDebug() << "RSI period:" << ui->spinBoxRSI->value();
     settings.setValue("chart/showMA", ui->checkBoxMA->isChecked());
     settings.setValue("chart/showRSI", ui->checkBoxRSI->isChecked());
     settings.setValue("chart/showMACD", ui->checkBoxMACD->isChecked());
@@ -57,8 +54,6 @@ void SettingsDialog::saveSettings()
 void SettingsDialog::loadSettings()
 {
     QSettings settings("kozlik90 Inc.", "user");
-    qDebug() << "Loading settings:";
-    qDebug() << "MA period from settings:" << settings.value("chart/maPeriod", 20).toInt();
     ui->checkBoxMA->setChecked(settings.value("chart/showMA", true).toBool());
     ui->checkBoxRSI->setChecked(settings.value("chart/showRSI", true).toBool());
     ui->checkBoxMACD->setChecked(settings.value("chart/showMACD", true).toBool());

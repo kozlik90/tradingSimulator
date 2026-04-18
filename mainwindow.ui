@@ -53,10 +53,7 @@
         <item>
          <widget class="QGroupBox" name="groupBox">
           <property name="styleSheet">
-           <string notr="true">
-
-
-</string>
+           <string notr="true"/>
           </property>
           <property name="title">
            <string>Indicators</string>
@@ -348,6 +345,11 @@ background-color: rgb(255, 112, 112);</string>
               </column>
               <column>
                <property name="text">
+                <string>Close Price</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>Amount</string>
                </property>
               </column>
@@ -358,12 +360,12 @@ background-color: rgb(255, 112, 112);</string>
               </column>
               <column>
                <property name="text">
-                <string>Close Time</string>
+                <string>Open Time</string>
                </property>
               </column>
               <column>
                <property name="text">
-                <string>Status</string>
+                <string>Close Time</string>
                </property>
               </column>
              </widget>
@@ -394,6 +396,7 @@ background-color: rgb(255, 112, 112);</string>
     <property name="title">
      <string>Файл</string>
     </property>
+    <addaction name="action_2"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menu">
@@ -419,6 +422,11 @@ background-color: rgb(255, 112, 112);</string>
   <action name="actionGraphSettings">
    <property name="text">
     <string>График</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>Настройки</string>
    </property>
   </action>
  </widget>

@@ -7,6 +7,7 @@
 #include "ChartWidget.h"
 #include "TradingSimulator.h"
 #include "SettingsDialog.h"
+#include "MainSettings.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -54,5 +55,6 @@ private slots:
     void closeEvent(QCloseEvent* event) override;
     void on_actionGraphSettings_triggered();
     void on_actionExit_triggered();
+    void on_action_2_triggered();
 };
 #endif // MAINWINDOW_H

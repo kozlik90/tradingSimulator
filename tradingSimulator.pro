@@ -13,6 +13,7 @@ CONFIG += c++17
 INCLUDEPATH += includes/
 
 SOURCES += \
+    source/MainSettings.cpp \
     source/BybitApi.cpp \
     source/ChartWidget.cpp \
     source/CoinData.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
     source/mainwindow.cpp
 
 HEADERS += \
+    includes/MainSettings.h \
     includes/BybitApi.h \
     includes/CandleData.h \
     includes/ChartWidget.h \
@@ -42,6 +44,7 @@ HEADERS += \
     includes/mainwindow.h
 
 FORMS += \
+    MainSettings.ui \
     SettingsDialog.ui \
     mainwindow.ui
 

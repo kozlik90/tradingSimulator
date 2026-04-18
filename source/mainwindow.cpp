@@ -5,6 +5,7 @@
 #include <QNetworkReply>
 #include <QMessageBox>
 #include <QSettings>
+#include <QCheckBox>
 #include <QRegularExpressionValidator>
 #include "includes/TradingSignals.h"
 
@@ -82,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::fetchPrice()
 {
-    for(auto* str: coinList) {
+    for(const auto* str: coinList) {
         api->fetchPrice(str->getTicker());
     }
 
@@ -294,18 +295,15 @@ void MainWindow::onTradeClosed(TradeData trade)
                 ui->tableHistory->setItem(rowHistory, 2, new QTableWidgetItem("SHORT"));
             }
             ui->tableHistory->setItem(rowHistory, 3, new QTableWidgetItem(QString::number(trade.entryPrice, 'f', 2)));
-            ui->tableHistory->setItem(rowHistory, 4, new QTableWidgetItem(QString::number(trade.amount, 'f', 2)));
+            ui->tableHistory->setItem(rowHistory, 4, new QTableWidgetItem(QString::number(trade.closePrice, 'f', 2)));
+            ui->tableHistory->setItem(rowHistory, 5, new QTableWidgetItem(QString::number(trade.amount, 'f', 2)));
             QTableWidgetItem* item = new QTableWidgetItem(QString::number(trade.profitLoss, 'f', 2));
             if(trade.profitLoss >= 0) item->setForeground(QBrush(Qt::green));
             else item->setForeground(QBrush(Qt::red));
-            ui->tableHistory->setItem(rowHistory, 5, item);
-            ui->tableHistory->setItem(rowHistory, 6, new QTableWidgetItem(trade.closeTime.toString("dd.MM.yy hh:mm:ss")));
-            if(trade.status == TradeStatus::OPEN) {
-                ui->tableHistory->setItem(rowHistory, 7, new QTableWidgetItem("OPEN"));
-            }
-            else {
-                ui->tableHistory->setItem(rowHistory, 7, new QTableWidgetItem("CLOSED"));
-            }
+            ui->tableHistory->setItem(rowHistory, 6, item);
+            ui->tableHistory->setItem(rowHistory, 7, new QTableWidgetItem(trade.openTime.toString("dd.MM.yy hh:mm:ss")));
+            ui->tableHistory->setItem(rowHistory, 8, new QTableWidgetItem(trade.closeTime.toString("dd.MM.yy hh:mm:ss")));
+
             ui->chart_widget->createTakeProfitLine(trade.takeProfit, false);
             ui->chart_widget->createStopLossLine(trade.stopLoss, false);
             ui->tablePositions->removeRow(i);
@@ -389,19 +387,14 @@ void MainWindow::updateUIFromSimulator()
                 ui->tableHistory->setItem(rowHistory, 2, new QTableWidgetItem("SHORT"));
             }
             ui->tableHistory->setItem(rowHistory, 3, new QTableWidgetItem(QString::number(trade.entryPrice, 'f', 2)));
-            ui->tableHistory->setItem(rowHistory, 4, new QTableWidgetItem(QString::number(trade.amount, 'f', 2)));
+            ui->tableHistory->setItem(rowHistory, 4, new QTableWidgetItem(QString::number(trade.closePrice, 'f', 2)));
+            ui->tableHistory->setItem(rowHistory, 5, new QTableWidgetItem(QString::number(trade.amount, 'f', 2)));
             QTableWidgetItem* item = new QTableWidgetItem(QString::number(trade.profitLoss, 'f', 2));
             if(trade.profitLoss >= 0) item->setForeground(QBrush(Qt::green));
             else item->setForeground(QBrush(Qt::red));
-            ui->tableHistory->setItem(rowHistory, 5, item);
-            ui->tableHistory->setItem(rowHistory, 6, new QTableWidgetItem(trade.closeTime.toString("dd.MM.yy hh:mm:ss")));
-
-            if(trade.status == TradeStatus::OPEN) {
-                ui->tableHistory->setItem(rowHistory, 7, new QTableWidgetItem("OPEN"));
-            }
-            else {
-                ui->tableHistory->setItem(rowHistory, 7, new QTableWidgetItem("CLOSED"));
-            }
+            ui->tableHistory->setItem(rowHistory, 6, item);
+            ui->tableHistory->setItem(rowHistory, 7, new QTableWidgetItem(trade.openTime.toString("dd.MM.yy hh:mm:ss")));
+            ui->tableHistory->setItem(rowHistory, 8, new QTableWidgetItem(trade.closeTime.toString("dd.MM.yy hh:mm:ss")));
         }
 
     }
@@ -409,7 +402,33 @@ void MainWindow::updateUIFromSimulator()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    simulator->saveToFile("trades.json");
+    if(!simulator->getOpenTrades().isEmpty()) {
+        QMessageBox message;
+        message.setText("Take Profit и Stop Loss не работает, если программа закрыта");
+        QCheckBox* cb = new QCheckBox("Не спрашивать больше", this);
+        message.setCheckBox(cb);
+        message.addButton(QMessageBox::Cancel);
+        message.addButton(QMessageBox::Ok);
+        message.setWindowTitle("Вы уверены, что хотите выйти?");
+        message.setIcon(QMessageBox::Warning);
+
+        MainSettings settings;
+        if(settings.getShowCloseMessage()) {
+            if(message.exec() == QMessageBox::Ok) {
+                simulator->saveToFile("trades.json");
+                settings.setCloseMessageNotif(!cb->isChecked());
+                settings.saveSettings();
+            }
+            else {
+                event->ignore();
+            }
+        }
+        else {
+            simulator->saveToFile("trades.json");
+        }
+
+    }
+
 }
 
 MainWindow::~MainWindow()
@@ -437,5 +456,14 @@ void MainWindow::on_actionGraphSettings_triggered()
 void MainWindow::on_actionExit_triggered()
 {
     QApplication::quit();
+}
+
+
+void MainWindow::on_action_2_triggered()
+{
+    MainSettings settings(this);
+    if(settings.exec() == QDialog::Accepted) {
+        settings.saveSettings();
+    }
 }
 

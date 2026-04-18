@@ -10,8 +10,8 @@ class CoinData : public QObject
 public:
     CoinData(QString, double, QObject*);
     void setPrice(double);
-    double getPrice() {return price; };
-    QString getTicker() {return ticker; };
+    double getPrice() const {return price; };
+    QString getTicker() const {return ticker; };
 
 private:
     QString ticker;
