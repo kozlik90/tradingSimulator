@@ -27,7 +27,7 @@ private:
     Ui::MainWindow *ui;
     BybitApi* api;
     TradingSimulator* simulator;
-
+    bool hasNetworkErrors = false;
     QList<CoinData*> coinList;
     QString currentTicker;
     qint64 currentCandleTimestamp;
@@ -44,6 +44,7 @@ private slots:
     void updateCurrentCandle();
     void onIndicatorsUpdated(double price, double ma, double rsi, double macd, double signal);
     void onIntervalChanged(int interval);
+    void networkErrorHandler(QString);
 
     void on_btn_LONG_clicked();
     void on_btn_Short_clicked();

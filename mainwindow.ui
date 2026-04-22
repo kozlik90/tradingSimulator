@@ -18,7 +18,19 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,3">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,0,0,0,2">
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,1,0,0,0,2">
+        <item>
+         <widget class="QLabel" name="label_Connection">
+          <property name="font">
+           <font>
+            <pointsize>7</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
         <item>
          <widget class="QTableWidget" name="tableCoin">
           <property name="styleSheet">

@@ -12,6 +12,7 @@ public:
     CustomChartView(QChart*, QWidget*);
     void setVerticalScrollEnabled(bool);
     void setAxisXFormat(QString f);
+    void showText(QString&);
 protected:
     void mouseMoveEvent(QMouseEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
@@ -20,6 +21,7 @@ private:
     QPoint lastMouse;
     bool isDragging;
     QLabel* priceLabel;
+    QLabel* text;
     bool verticalScrollEnabled = true;
     qreal factor = 1.0;
     QString format = "hh:mm";

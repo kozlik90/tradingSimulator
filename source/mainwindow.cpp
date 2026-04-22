@@ -19,6 +19,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(api, &BybitApi::priceReceived, this, &MainWindow::onPriceReceived);
     connect(api, &BybitApi::candleReceived, this, &MainWindow::onCandleReceived);
+    connect(api, &BybitApi::error, this, &MainWindow::networkErrorHandler);
+    connect(api, &BybitApi::noErrors, this, [this]() {
+        ui->label_Connection->setText("Подключено");
+        ui->label_Connection->setStyleSheet("color: green");
+        ui->chart_widget->showErrorMessage("");
+        if(hasNetworkErrors) {
+            api->fetchCandle(currentTicker, currentInterval, 700);
+        }
+        hasNetworkErrors = false;
+    });
     connect(ui->tableCoin, &QTableWidget::cellClicked, this, &MainWindow::onCoinSelected);
     connect(ui->chart_widget, &ChartWidget::indicatorsUpdated, this, &MainWindow::onIndicatorsUpdated);
     connect(ui->chart_widget, &ChartWidget::intervalChanged, this, &MainWindow::onIntervalChanged);
@@ -71,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit_StopLoss->setValidator(reValidator);
     ui->lineEdit_TakeProfit->setValidator(reValidator);
 
-    QSettings settings("kozlik90 Inc." "user");
+    QSettings settings("kozlik90 Inc.", "user");
     ui->chart_widget->setShowMA(settings.value("chart/showMA", true).toBool());
     ui->chart_widget->setShowRSI(settings.value("chart/showRSI", true).toBool());
     ui->chart_widget->setShowMACD(settings.value("chart/showMACD", true).toBool());
@@ -91,9 +101,11 @@ void MainWindow::fetchPrice()
 
 void MainWindow::updateCurrentCandle()
 {
+
     if(!currentTicker.isEmpty()) {
         api->fetchCandle(currentTicker, currentInterval, 1);
     }
+
 }
 
 
@@ -109,6 +121,7 @@ void MainWindow::onPriceReceived(TickerData data)
     if (coinData) {
         coinData->setPrice(data.price);
     }
+
 }
 
 void MainWindow::onCandleReceived(QList<CandleData> candles)
@@ -179,6 +192,14 @@ void MainWindow::onIntervalChanged(int interval)
     }
 }
 
+void MainWindow::networkErrorHandler(QString str)
+{
+    hasNetworkErrors = true;
+    ui->label_Connection->setText("Нет соединения с биржей");
+    ui->label_Connection->setStyleSheet("color: red;");
+    ui->chart_widget->showErrorMessage(str);
+}
+
 void MainWindow::onPriceChanged(QString ticker, double price)
 {
 
@@ -197,6 +218,14 @@ void MainWindow::onPriceChanged(QString ticker, double price)
 
 void MainWindow::on_btn_LONG_clicked()
 {
+    if(hasNetworkErrors) {
+        QMessageBox box;
+        box.setWindowTitle("Сетевая ошибка");
+        box.setText("Нет подключения к бирже");
+        box.setIcon(QMessageBox::Warning);
+        box.exec();
+        return;
+    }
     double amount = ui->lineEdit_amount->text().toDouble();
     double takeProfit = ui->lineEdit_TakeProfit->text().toDouble();
     double stopLoss = ui->lineEdit_StopLoss->text().toDouble();
@@ -223,6 +252,14 @@ void MainWindow::on_btn_LONG_clicked()
 
 void MainWindow::on_btn_Short_clicked()
 {
+    if(hasNetworkErrors) {
+        QMessageBox box;
+        box.setWindowTitle("Сетевая ошибка");
+        box.setText("Нет подключения к бирже");
+        box.setIcon(QMessageBox::Warning);
+        box.exec();
+        return;
+    }
     double amount = ui->lineEdit_amount->text().toDouble();
     double takeProfit = ui->lineEdit_TakeProfit->text().toDouble();
     double stopLoss = ui->lineEdit_StopLoss->text().toDouble();
@@ -427,6 +464,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
             simulator->saveToFile("trades.json");
         }
 
+    }
+    else {
+        simulator->saveToFile("trades.json");
     }
 
 }

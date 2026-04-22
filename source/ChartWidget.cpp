@@ -211,8 +211,8 @@ ChartWidget::ChartWidget(QWidget* p) : QWidget(p) {
 
     CustomScrollArea* scrollArea = new CustomScrollArea(this);
     scrollArea->setWidget(container);
-    scrollArea->setWidgetResizable(true);  // Важно!
-    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);  // Только вертикальная прокрутка
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -371,11 +371,9 @@ void ChartWidget::setCandles(QList<CandleData> list)
         sellMarkers->clear();
         tradeMarkers.clear();
 
+        axisY->setMax(max * 1.001);
+        axisY->setMin(min * 0.999);
     }
-
-    axisY->setMax(max * 1.001);
-    axisY->setMin(min * 0.999);
-
 
 }
 
@@ -689,6 +687,12 @@ void ChartWidget::setRSIPeriod(int period)
     for (int i = 0; i < rsi.size(); ++i) {
         rsiSeries->append(allCandles[i + period].timestamp, rsi[i]);
     }
+}
+
+void ChartWidget::showErrorMessage(QString str)
+{
+    qDebug() << str;
+    mainChartView->showText(str);
 }
 
 ChartWidget::~ChartWidget()

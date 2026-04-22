@@ -15,6 +15,9 @@ CustomChartView::CustomChartView(QChart* chart, QWidget* parrent = nullptr) : QC
     priceLabel = new QLabel(this);
     priceLabel->setStyleSheet("QLabel { color: black; font-size: 14px; }");
     priceLabel->hide();
+    text = new QLabel(this);
+    text->setStyleSheet("QLabel { color: black; font-size: 24px; }");
+    text->hide();
 }
 
 void CustomChartView::setVerticalScrollEnabled(bool f)
@@ -27,6 +30,14 @@ void CustomChartView::setAxisXFormat(QString f)
     format = f;
 }
 
+void CustomChartView::showText(QString& str)
+{
+    text->setText(str);
+    text->move(this->width()/2.0, this->height()/2.0);
+    text->adjustSize();
+    text->show();
+}
+
 
 void CustomChartView::mousePressEvent(QMouseEvent *event)
 {
@@ -37,7 +48,6 @@ void CustomChartView::mouseMoveEvent(QMouseEvent *event)
 {
     QPointF chartPos = chart()->mapToValue(event->pos());
 
-    // Покажи метку с ценой
     QDateTime time = QDateTime::fromMSecsSinceEpoch(chartPos.x());
     priceLabel->setText(QString("%1 \n%2").arg(chartPos.y(), 0, 'f', 2).arg(time.toString(format)));
     priceLabel->adjustSize();

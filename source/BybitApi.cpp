@@ -35,7 +35,8 @@ void BybitApi::fetchCandle(QString symbol, int interval, int limit)
     QNetworkReply* reply = candleManager->get(request);
 
     connect(reply, &QNetworkReply::errorOccurred, [=](){
-        qDebug() << "Error occurred:" << reply->errorString();
+       // qDebug() <<reply->error();
+        //qDebug() << "Error occurred:" << reply->errorString();
     });
 
 
@@ -44,6 +45,11 @@ void BybitApi::fetchCandle(QString symbol, int interval, int limit)
 
 void BybitApi::onReplyFinished(QNetworkReply *reply)
 {
+    if(reply->error()) {
+        emit error(reply->errorString());
+        return;
+    }
+
     QString type = reply->request().attribute(QNetworkRequest::Attribute(QNetworkRequest::User+1)).toString();
     QString coinName = reply->request().attribute(QNetworkRequest::User).toString();
     QByteArray data = reply->readAll();
@@ -75,6 +81,7 @@ void BybitApi::onReplyFinished(QNetworkReply *reply)
         }
         emit candleReceived(candles);
     }
+    emit noErrors();
 
 
 

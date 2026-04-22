@@ -41,6 +41,7 @@ public:
     void setShowMACD(bool show);
     void setMAPeriod(int period);
     void setRSIPeriod(int period);
+    void showErrorMessage(QString);
     ~ChartWidget();
 private:
     qreal factor;

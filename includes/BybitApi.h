@@ -20,6 +20,8 @@ private:
 signals:
     void priceReceived(TickerData);
     void candleReceived(QList<CandleData>);
+    void error(QString);
+    void noErrors();
 private slots:
     void onReplyFinished(QNetworkReply*);
 
